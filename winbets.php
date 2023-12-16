@@ -53,25 +53,62 @@ for ($raceNumber = 1; $raceNumber <= $totalRaces; $raceNumber++) {
     $favorite = $runners[0];
     $raceData = $history[$raceNumber][$favorite];
     $racetext = "";
-    $toWin = $raceData['win'];
-    $weights1 = [];
-    foreach($toWin as $winner){
-        $weights1[$winner] = $allRacesOdds[$raceNumber][$winner];
-    }
-    $bets1 = getWeights($weights1, 1);
    
     $racetext .= "\t'$raceNumber' => [\n";
     $racetext .= "\t\t/**\n";
     $racetext .= "\t\tRace $raceNumber\n";
     $racetext .= "\t\t*/\n";
-    $racetext .= "\t\t'Win Set Win Bets'  =>  [\n";
-    $total = 0;
-    foreach($bets1 as $horse => $bet){
-        $racetext .= "\t\t\t'$horse' => '" . 10 * $bet . " HKD',\n"  ;
-        $total += 10 * $bet;
+    $racetext .= "\t\t'Favorite'  =>  '$favorite',\n";
+    $toWin = $raceData['win'];
+    if(!empty($toWin)){
+        //Sort  toWin by odds
+        $qplsOdds = [];
+        foreach($toWin as $iIndex){
+            if(isset($allRacesOdds[$raceNumber][$iIndex])) $qplsOdds[$iIndex] = $allRacesOdds[$raceNumber][$iIndex];
+        }
+        asort($qplsOdds);
+        $toWin = array_keys($qplsOdds);
+        $weights = [];
+        foreach($toWin as $winner){
+            $weights[$winner] = $allRacesOdds[$raceNumber][$winner];
+        }
+        $bets = getWeights($weights, 1);
+        $racetext .= "\t\t'Win Set Win Bets'  =>  [\n";
+        $total = 0;
+        foreach($bets as $horse => $bet){
+            $racetext .= "\t\t\t'$horse' => '" . 10 * $bet . " HKD',\n"  ;
+            $total += 10 * $bet;
+        }
+        $racetext .= "\t\t],\n";
+        $racetext .= "\t\t'Total Bets set 1'  =>  '$total HKD',\n";
     }
-    $racetext .= "\t\t],\n";
-    $racetext .= "\t\t'Total Bets set 1'  =>  '$total HKD',\n";
+    $qin = $raceData['qin'];
+    if(!empty($qin)){
+        $qinValues = [];
+        foreach($qin as $qinArray){
+            $qinValues = array_values(array_unique(array_merge($qinValues, $qinArray)));
+        }
+        //Sort  qinValues by odds
+        $qplsOdds = [];
+        foreach($qinValues as $iIndex){
+            if(isset($allRacesOdds[$raceNumber][$iIndex])) $qplsOdds[$iIndex] = $allRacesOdds[$raceNumber][$iIndex];
+        }
+        asort($qplsOdds);
+        $qinValues = array_keys($qplsOdds);
+        $weights = [];
+        foreach($qinValues as $winner){
+            $weights[$winner] = $allRacesOdds[$raceNumber][$winner];
+        }
+        $bets = getWeights($weights, 1);
+        $racetext .= "\t\t'Qin Set Win Bets'  =>  [\n";
+        $total = 0;
+        foreach($bets as $horse => $bet){
+            $racetext .= "\t\t\t'$horse' => '" . 10 * $bet . " HKD',\n"  ;
+            $total += 10 * $bet;
+        }
+        $racetext .= "\t\t],\n";
+        $racetext .= "\t\t'Total Bets set 2'  =>  '$total HKD',\n";
+    }
     $racetext .= "\t],\n";
     $outtext .= $racetext;
 }
