@@ -51,15 +51,19 @@ for ($raceNumber = 1; $raceNumber <= $totalRaces; $raceNumber++) {
     if(!isset($allRacesRunners[$raceNumber])) continue;
     $runners = explode(", ", $allRacesRunners[$raceNumber]['Runners']);
     $favorite = $runners[0];
+    $secondFavorite = $runners[1];
     $raceData = $history[$raceNumber][$favorite];
+    $raceData2 = $history[$raceNumber][$secondFavorite];
     $racetext = "";
    
     $racetext .= "\t'$raceNumber' => [\n";
     $racetext .= "\t\t/**\n";
     $racetext .= "\t\tRace $raceNumber\n";
     $racetext .= "\t\t*/\n";
-    $racetext .= "\t\t'Favorite'  =>  '$favorite',\n";
+    $racetext .= "\t\t'Favorite       '  =>  '$favorite',\n";
+    $racetext .= "\t\t'Second Favorite'  =>  '$secondFavorite',\n";
     $toWin = $raceData['win'];
+    $toWin2 = array_values(array_unique(array_merge($toWin, $raceData2['win'])));
     if(!empty($toWin)){
         //Sort  toWin by odds
         $qplsOdds = [];
@@ -108,6 +112,28 @@ for ($raceNumber = 1; $raceNumber <= $totalRaces; $raceNumber++) {
         }
         $racetext .= "\t\t],\n";
         $racetext .= "\t\t'Total Bets set 2'  =>  '$total HKD',\n";
+    }
+    if(!empty($toWin2)){
+        //Sort  toWin2 by odds
+        $qplsOdds = [];
+        foreach($toWin2 as $iIndex){
+            if(isset($allRacesOdds[$raceNumber][$iIndex])) $qplsOdds[$iIndex] = $allRacesOdds[$raceNumber][$iIndex];
+        }
+        asort($qplsOdds);
+        $toWin2 = array_keys($qplsOdds);
+        $weights = [];
+        foreach($toWin2 as $winner){
+            $weights[$winner] = $allRacesOdds[$raceNumber][$winner];
+        }
+        $bets = getWeights($weights, 1);
+        $racetext .= "\t\t'Win Bets Based on 1st and 2nd favorites'  =>  [\n";
+        $total = 0;
+        foreach($bets as $horse => $bet){
+            $racetext .= "\t\t\t'$horse' => '" . 10 * $bet . " HKD',\n"  ;
+            $total += 10 * $bet;
+        }
+        $racetext .= "\t\t],\n";
+        $racetext .= "\t\t'Total Bets set 3'  =>  '$total HKD',\n";
     }
     $racetext .= "\t],\n";
     $outtext .= $racetext;
