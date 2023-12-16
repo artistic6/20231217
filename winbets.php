@@ -39,10 +39,10 @@ $currentDir = __DIR__ . DIRECTORY_SEPARATOR . $raceDate;
 
 $allRacesRunners = include($currentDir . DIRECTORY_SEPARATOR . "1.php");
 $allRacesOdds = include($currentDir . DIRECTORY_SEPARATOR . "getodds.php");
-$history = include(__DIR__ . "triohistory.php");
+$history = include(__DIR__ . DIRECTORY_SEPARATOR . "triohistory.php");
 $outFile = $currentDir . DIRECTORY_SEPARATOR . "$step.php";
 
-$totalRaces = count($allWinOdds);
+$totalRaces = count($allRacesRunners);
 
 $outtext = "<?php\n\n";
 $outtext .= "return [\n";
