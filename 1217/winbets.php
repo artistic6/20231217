@@ -104,7 +104,7 @@ return [
 		],
 		'Total Bets set 2'  =>  '70 HKD',
 		'Win Bets Based on 1st and 2nd favorites'  =>  [
-			'3' => '70 HKD',
+			'3' => '80 HKD',
 			'7' => '30 HKD',
 			'8' => '30 HKD',
 			'1' => '20 HKD',
@@ -112,7 +112,7 @@ return [
 			'5' => '20 HKD',
 			'10' => '20 HKD',
 		],
-		'Total Bets set 3'  =>  '210 HKD',
+		'Total Bets set 3'  =>  '220 HKD',
 	],
 	'6' => [
 		/**
